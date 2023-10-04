@@ -3,28 +3,31 @@ package main
 import (
 	"os"
 	"os/exec"
-	"os/user"
-	"path/filepath"
 	"strings"
 )
 
 func main() {
 	println("Creating flashcards!\n")
+	inputPath := os.Args[1]
+	inputInfo, _ := os.Stat(inputPath)
 
-	usr, _ := user.Current()
-	dir := usr.HomeDir
-	folderPath := dir + "/Documents/Obsidian/Notes"
-
-	files, err := os.ReadDir(folderPath)
-	if err != nil {
-		println("Directory error: ", err)
-		return
+	if inputInfo.IsDir() {
+		visitFolder(inputPath)
+	} else if inputInfo.Mode().IsRegular() {
+		generateFlashcards(inputPath)
+	} else {
+		println("Error")
+		// error
 	}
+}
 
-	for _, file := range files {
-		if strings.HasSuffix(file.Name(), ".md") {
-			filePath := filepath.Join(folderPath, file.Name())
-
+func visitFolder(folderPath string) {
+	folder, _ := os.ReadDir(folderPath)
+	for _, path := range folder {
+		if path.IsDir() {
+			visitFolder(folderPath + "/" + path.Name())
+		} else if strings.HasSuffix(path.Name(), ".md") {
+			filePath := folderPath + "/" + path.Name()
 			generateFlashcards(filePath)
 			appendToNotes()
 		}
