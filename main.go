@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"flag"
 	"os"
 	"os/exec"
@@ -50,6 +51,12 @@ func visitFolder(folderPath string) {
 
 // Generate flashcards from the given file.
 func generateFlashcards(filePath string) {
+
+	if hasExistingFlashcards(filePath) {
+		println("Skipping " + filePath + " as it already has flashcards.")
+		return
+	}
+
 	println("Generating flashcards for:", filePath)
 	content, err := os.ReadFile(filePath)
 	if err != nil {
@@ -96,7 +103,28 @@ func appendToNotes(filePath string, flashcards string) {
 	}
 }
 
-// TODO: Add that it can't generate new flashcards if there already exist flashcards for the notes
+// Check if notes already has flashcards
+func hasExistingFlashcards(filePath string) bool {
+	file, err := os.Open(filePath)
+	if err != nil {
+		println("File open error:", err)
+		return false
+	}
+	defer file.Close()
+
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		line := scanner.Text()
+		if strings.Contains(line, "## Flashcards") {
+			return true
+		}
+	}
+
+	return false
+}
+
 // TODO: Change from using the model with cmd to the model API
 // TODO: Improve on promt or change settings for the model
 // TODO: Restructure the app
+// TODO: Implement Goroutines for concurrent flashcard generation.
+// TODO: Use filepath.Join for building file paths to ensure cross-platform compatibility.
