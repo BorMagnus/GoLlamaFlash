@@ -1,28 +1,44 @@
 package main
 
 import (
+	"flag"
 	"os"
 	"os/exec"
 	"strings"
 )
 
 func main() {
-	println("Creating flashcards!\n")
-	inputPath := os.Args[1]
-	inputInfo, _ := os.Stat(inputPath)
+	var path string
+	flag.StringVar(&path, "path", "", "Path to the file or directory")
+	flag.Parse()
 
-	if inputInfo.IsDir() {
-		visitFolder(inputPath)
-	} else if inputInfo.Mode().IsRegular() {
-		generateFlashcards(inputPath)
-	} else {
-		println("Error")
-		// error
+	if path == "" {
+		println("No path provided. Run: go run your_program.go --path your_file_name")
+		return
+	}
+
+	fileInfo, err := os.Stat(path)
+	if err != nil {
+		println("Error:", err)
+		return
+	}
+
+	switch mode := fileInfo.Mode(); {
+	case mode.IsDir():
+		visitFolder(path)
+	case mode.IsRegular():
+		generateFlashcards(path)
 	}
 }
 
+// Recursive function to find files in folders
 func visitFolder(folderPath string) {
-	folder, _ := os.ReadDir(folderPath)
+	folder, err := os.ReadDir(folderPath)
+	if err != nil {
+		println("Read directory error:", err)
+		return
+	}
+
 	for _, path := range folder {
 		if path.IsDir() {
 			visitFolder(folderPath + "/" + path.Name())
