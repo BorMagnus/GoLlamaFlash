@@ -38,20 +38,19 @@ func visitFolder(folderPath string) {
 		println("Read directory error:", err)
 		return
 	}
-
 	for _, path := range folder {
 		if path.IsDir() {
 			visitFolder(folderPath + "/" + path.Name())
 		} else if strings.HasSuffix(path.Name(), ".md") {
 			filePath := folderPath + "/" + path.Name()
 			generateFlashcards(filePath)
-			appendToNotes()
 		}
 	}
 }
 
 // Generate flashcards from the given file.
 func generateFlashcards(filePath string) {
+	println("Generating flashcards for:", filePath)
 	content, err := os.ReadFile(filePath)
 	if err != nil {
 		println("Read file error: ", err)
@@ -72,12 +71,32 @@ func generateFlashcards(filePath string) {
 		return
 	}
 
-	flashcard := string(output)
-	println("Generated Flashcard: ", flashcard)
+	flashcards := string(output)
+
+	// Append the generated flashcards to the notes.
+	appendToNotes(filePath, flashcards)
 
 }
 
-// TODO: Create an function to add the flashcards to the notes.
-func appendToNotes() {
+// Add the flashcards to the notes.
+func appendToNotes(filePath string, flashcards string) {
+	// Open the file in append mode.
+	file, err := os.OpenFile(filePath, os.O_APPEND|os.O_WRONLY, 0644)
+	if err != nil {
+		println("File open error:", err)
+		return
+	}
+	defer file.Close()
 
+	// Add a separator and the flashcard content.
+	_, err = file.WriteString("\n---\n## Flashcards\n" + flashcards + "\n")
+	if err != nil {
+		println("File write error:", err)
+		return
+	}
 }
+
+// TODO: Add that it can't generate new flashcards if there already exist flashcards for the notes
+// TODO: Change from using the model with cmd to the model API
+// TODO: Improve on promt or change settings for the model
+// TODO: Restructure the app
