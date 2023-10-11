@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/BorMagnus/goLlamaFlash/pkg/flashcards"
+	"goLlamaFlash/internal/flashcards"
 )
 
 // Processes either a file or a directory path for flashcard generation
