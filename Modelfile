@@ -1,0 +1,27 @@
+# Ollama Modelfile for generating Flashcards
+
+# Specify the base model to use
+FROM llama2
+
+# Parameters for controlling the behavior of the model
+PARAMETER temperature 0.7  # Lower temperature for more focused and factual responses
+PARAMETER top_k 75  # Reduce the probability of generating nonsense
+PARAMETER top_p 0.6  # Works together with top-k
+
+# System prompt to specify the model's behavior
+SYSTEM "Act as a writer. Generate flashcards with questions and answers about the notes given. Keep each flashcard concise and informative. Only include theoretical questions. Output only the text and nothing else, do not chat, no preamble, get to the point. Only respond with flashcards."
+
+# Full prompt template
+TEMPLATE """
+{{- if .First }}
+### System:
+{{ .System }}
+{{- end }}
+
+### User:
+{{ .Prompt }}
+
+### Response:
+"""
+
+SYSTEM """<system message>"""
