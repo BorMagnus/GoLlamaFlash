@@ -1,3 +1,3 @@
-module github.com/BorMagnus/goLlamaFlash
+module goLlamaFlash
 
 go 1.21.1

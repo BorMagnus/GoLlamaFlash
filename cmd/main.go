@@ -4,7 +4,7 @@ import (
 	"flag"
 	"fmt"
 
-	"github.com/BorMagnus/goLlamaFlash/pkg/utils"
+	"goLlamaFlash/internal/utils"
 )
 
 func main() {
