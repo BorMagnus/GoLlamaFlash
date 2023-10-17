@@ -13,14 +13,15 @@ func main() {
 	flag.Parse()
 
 	if path == "" {
-		fmt.Println("No path provided. Run: go run your_program.go --path your_file_name")
+		fmt.Println("No path provided. Run: go run main.go --path your_file_name")
 		return
 	}
 
 	utils.ProcessPath(path)
 }
 
-// TODO: Change from using the model with cmd to the model API
 // TODO: Improve on promt or change settings for the model
-// TODO: Implement Goroutines for concurrent flashcard generation.
 // TODO: Fix error handeling after adding new error checks
+// TODO: Create a folder scanner that checks if a there are some changes on the markdown files in the folder
+// TODO: Change the prompt to see if there is any flashcards that can be made
+// TODO: Improve HTTP Client

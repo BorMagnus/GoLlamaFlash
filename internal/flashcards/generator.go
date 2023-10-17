@@ -42,13 +42,8 @@ func GenerateFlashcards(filePath string) (string, error) {
 	}
 
 	data := map[string]interface{}{
-		"model": "flashcards",
-		"prompt": `Act as a writer. Generate flashcards with questions and answers
-		about the notes given. Keep each flashcard concise and
-		informative. Only include theoretical questions.
-		Output only the text and nothing else, do
-		not chat, no preamble, get to the point. Only respond with flashcards. 
-		Notes: ` + string(content),
+		"model":  "flashcards",
+		"prompt": string(content),
 	}
 
 	jsonData, err := json.Marshal(data)
@@ -86,8 +81,6 @@ func GenerateFlashcards(filePath string) (string, error) {
 	}
 
 	flashcards := string(fullAPIResponse)
-
-	fmt.Print(flashcards)
 
 	return flashcards, nil
 }
