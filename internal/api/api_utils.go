@@ -36,9 +36,9 @@ type Flashcard struct {
 }
 
 // NewClient returns a configured HTTP client.
-func NewClient() *http.Client {
+func NewClient() *http.Client { // TODO: Change time
 	return &http.Client{
-		Timeout: time.Second * 10, // for example
+		Timeout: time.Second * 20,
 	}
 }
 
@@ -55,24 +55,24 @@ func ParseAPIResponse(apiResponse string) (FlashcardsResponse, error) {
 		var apiResponseObj Response
 		err := json.Unmarshal([]byte(response), &apiResponseObj)
 		if err != nil {
-			return flashcardsResponse, fmt.Errorf("Error unmarshaling response: %w", err)
+			return flashcardsResponse, fmt.Errorf("error unmarshaling response: %w", err)
 		} else {
 			fullAPIResponse += apiResponseObj.APIResponse
 		}
 	}
 
-	startIdx := strings.Index(fullAPIResponse, "{")
+	startIdx := strings.Index(fullAPIResponse, "{") // TODO: Better way to find JSON in output
 	endIdx := strings.LastIndex(fullAPIResponse, "}") + 1
 
 	if startIdx == -1 || endIdx == -1 {
-		return flashcardsResponse, fmt.Errorf("Valid JSON not found in the API response")
+		return flashcardsResponse, fmt.Errorf("valid JSON not found in the API response")
 	}
 
 	jsonPart := fullAPIResponse[startIdx:endIdx]
 
 	err := json.Unmarshal([]byte(jsonPart), &flashcardsResponse)
 	if err != nil {
-		return flashcardsResponse, fmt.Errorf("Error parsing flashcards JSON: %w", err)
+		return flashcardsResponse, fmt.Errorf("error parsing flashcards JSON: %w", err)
 	}
 
 	return flashcardsResponse, nil
@@ -87,4 +87,14 @@ func FetchAPIResponse(client *http.Client, url string, jsonData []byte) ([]byte,
 	defer resp.Body.Close()
 
 	return io.ReadAll(resp.Body)
+}
+
+// PrepareRequestData prepares JSON data for API call.
+func PrepareRequestData(content string) ([]byte, error) {
+	data := map[string]interface{}{
+		"model":  "flashcards",
+		"prompt": content,
+	}
+
+	return json.Marshal(data)
 }

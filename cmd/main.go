@@ -3,8 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
-
-	"goLlamaFlash/internal/utils"
+	"goLlamaFlash/internal/filehandler"
 )
 
 func main() {
@@ -17,11 +16,14 @@ func main() {
 		return
 	}
 
-	utils.ProcessPath(path)
+	filehandler.ProcessPath(path)
 }
 
 // TODO: Improve on promt or change settings for the model
-// TODO: Fix error handeling after adding new error checks
+// TODO: Fix error handeling
 // TODO: Create a folder scanner that checks if a there are some changes on the markdown files in the folder
 // TODO: Change the prompt to see if there is any flashcards that can be made
 // TODO: Improve HTTP Client
+// TODO: Check diff between md files
+// TODO: Save md file with SQLite?
+// TODO: Make model return a JSON with flashcards

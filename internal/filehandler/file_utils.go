@@ -60,7 +60,7 @@ func handleFile(filePath string) error {
 	}
 }
 
-func hasExistingFlashcards(filePath string) bool { // TODO: Move to file_utils.go
+func hasExistingFlashcards(filePath string) bool {
 	file, err := os.Open(filePath)
 	if err != nil {
 		println("File open error:", err)
